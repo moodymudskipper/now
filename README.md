@@ -62,14 +62,14 @@ do
 #>     lifecycle::signal_stage("superseded", "do()")
 #>     UseMethod("do")
 #> }
-#> <bytecode: 0x13a87fb30>
+#> <bytecode: 0x1477ce720>
 #> <environment: namespace:dplyr>
 location
 #> function (df) 
 #> {
 #>     lifecycle::deprecate_stop("1.0.0", "location()", "lobstr::ref()")
 #> }
-#> <bytecode: 0x11f90fef0>
+#> <bytecode: 0x145be9b30>
 #> <environment: namespace:dplyr>
 
 now::clean_up_tidyverse()
@@ -87,11 +87,15 @@ library(dm)
 #>  object 'separate' not found whilst loading namespace 'dm'
 ```
 
-To avoid the latter we could call `library(dm)` before cleaning up
-(these dependencies would be copied in dm’s imports env so
-`dm::separate()` would work but `tidyr::separate()` wouldn’t), or call
-`clean_up_tidyverse(force_keep = c("separate", "transmute"))` above to
-keep the necessary dependencies around.
+To avoid the latter, either :
+
+- call `library(dm)` before cleaning up (these dependencies would be
+  copied in dm’s imports env so `dm::separate()` would work but
+  `tidyr::separate()` wouldn’t)
+- call `clean_up_tidyverse(force_keep = c("separate", "transmute"))`
+  above to keep the necessary dependencies around.
+- call `clean_up("dm")` or `clean_attach("dm")` before
+  `clean_up_tidyverse()` and don’t be bothered with {dm}’s re-exports
 
 Let’s take a look at how much we can expect to trim off
 
