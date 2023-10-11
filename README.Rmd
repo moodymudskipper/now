@@ -1,0 +1,96 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+options(tidyverse.quiet = TRUE)
+```
+
+# now
+
+Experimental!
+
+Forget about lifecycles, live in the {now}. 
+
+`now::clean_up()` removes functions of given life cycles from the namespace's exports so they're not attached with `library()` and not available or suggested with `::`.
+
+Why would we want that ?
+
+* You might not want to use deprecated functions, to use best current practice
+* You might not want to use experimental functions, because you need to write stable code
+* You might not want to run into defunct functions, that exist only to fail
+* You might want to explore a package without being distracted by outdated or unstable
+  features.
+
+* `clean_up(pkgs)` is `clean_up(pkgs, remove = getOption("now.lifecycles", c("superseded", "deprecated", "defunct")))`.
+* Additional possible options are `"experimental"`, `"questioning"`, and `"reexports"`, 
+  the latter is not a life cycle, but allows you to drop reexports so you're forced
+  to use the source package when programming.
+* For instance use`clean_up(pkg, lifecycle = "defunct")` to cleanup only defunct functions, and not break anything.
+* Use`clean_up_tidyverse()` to do the above on all tidyverse packages at once.
+* `clean_attach()` and `clean_attach_tidyverse()` are wrappers that call library
+
+> **It's not meant to be used in production, because it will break some dependencies that rely on the
+features you've removed**
+
+It works by looking at the doc and the code of a function, but we might miss
+some "life-cycled" functions if the doc doesn't clearly use life cycle tags and the code
+doesn't call a {lifecycle} function directly.
+
+## Installation
+
+Install with
+
+``` r
+remotes::install_github("moodymudskipper/now")
+```
+
+## Example
+
+```{r, error = TRUE}
+library(tidyverse)
+before <- sapply(tidyverse_packages(), \(pkg) length(getNamespaceExports(pkg)))
+do
+location
+
+now::clean_up_tidyverse()
+after <- sapply(tidyverse_packages(), \(pkg) length(getNamespaceExports(pkg)))
+do
+location
+dplyr::do
+
+# expect some failures! Many packages use superseded functions in particular
+library(dm)
+```
+
+To avoid the latter we could call `library(dm)` before cleaning up (these dependencies would
+be copied in dm's imports env so `dm::separate()` would work but `tidyr::separate()` wouldn't), or call `clean_up_tidyverse(force_keep = c("separate", "transmute"))` above to keep the necessary dependencies around.
+
+Let's take a look at how much we can expect to trim off
+
+```{r, error = TRUE}
+# removing only superseded/deprecated/defunct
+left_join(enframe(before, value = "before"), enframe(after, value = "after"), by = "name") |> 
+  filter(after != before) |>
+  mutate(keep_ratio = sprintf("%2.0f%%", 100*after/before)) |>
+  arrange(keep_ratio) |>
+  knitr::kable()
+
+# removing additionally all experimental and questioning features, along with reexports
+now::clean_up_tidyverse(c("experimental", "superseded", "deprecated", "defunct", "questioning", "reexports"))
+after <- sapply(tidyverse_packages(), \(pkg) length(getNamespaceExports(pkg)))
+left_join(enframe(before, value = "before"), enframe(after, value = "after"), by = "name") |> 
+  filter(after != before) |>
+  mutate(keep_ratio = sprintf("%2.0f%%", 100*after/before)) |>
+  arrange(keep_ratio) |>
+  knitr::kable()
+```
+

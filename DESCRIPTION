@@ -1,0 +1,12 @@
+Package: now
+Title: Remove Exported Functions Depending On Lifecycle 
+Version: 0.0.0.9000
+Authors@R: 
+    person("Antoine", "Fabri", , "antoine.fabri@cynkra.com", role = c("aut", "cre"))
+Description: Remove "experimental", "superseded", "deprecated", "defunct", 
+  "questioning", or "reexports" from the exported functions of a package, so these
+  don't get in the way.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
