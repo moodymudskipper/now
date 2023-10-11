@@ -30,6 +30,8 @@ Why would we want that ?
 * You might want to explore a package without being distracted by outdated or unstable
   features.
 
+In short:
+
 * `clean_up(pkgs)` is `clean_up(pkgs, remove = getOption("now.lifecycles", c("superseded", "deprecated", "defunct")))`.
 * Additional possible options are `"experimental"`, `"questioning"`, and `"reexports"`, 
   the latter is not a life cycle, but allows you to drop reexports so you're forced
