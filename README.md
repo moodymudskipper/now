@@ -39,6 +39,9 @@ In short:
 > **It’s not meant to be used in production, because it will break some
 > dependencies that rely on the features you’ve removed**
 
+Obviously life cycles are important and there are reasons why they
+exist, they just sometimes get in the way.
+
 It works by looking at the doc and the code of a function, but we might
 miss some “life-cycled” functions if the doc doesn’t clearly use life
 cycle tags and the code doesn’t call a {lifecycle} function directly.
@@ -62,14 +65,14 @@ do
 #>     lifecycle::signal_stage("superseded", "do()")
 #>     UseMethod("do")
 #> }
-#> <bytecode: 0x1477ce720>
+#> <bytecode: 0x11a1adc80>
 #> <environment: namespace:dplyr>
 location
 #> function (df) 
 #> {
 #>     lifecycle::deprecate_stop("1.0.0", "location()", "lobstr::ref()")
 #> }
-#> <bytecode: 0x145be9b30>
+#> <bytecode: 0x12e2df648>
 #> <environment: namespace:dplyr>
 
 now::clean_up_tidyverse()
