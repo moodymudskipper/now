@@ -29,7 +29,5 @@ clean_attach_tidyverse <- function(
     force_keep = NULL)  {
   # clean up first so we don't get unnecessary name conflict warnings
   clean_up_tidyverse(remove, force_remove, force_keep)
-  for (pkg in pkgs) {
-    library(pkg, character.only = TRUE)
-  }
+  library(tidyverse)
 }
